@@ -1,0 +1,28 @@
+# Main paper experiment. Real host, run as root:
+#   sudo -E python3 experiments/run_matrix.py experiments/configs/main.yaml
+# Needs fio + sysbench installed (scripts/setup_host.sh) and ANTHROPIC_API_KEY
+# for the Claude agent. Budget estimate: ~2-6 h per workload per agent per seed.
+name: main
+workloads: [fio-seqwrite, fio-randread, sysbench-memory]
+agents:
+  - name: default
+  - name: random
+  - name: hillclimb
+  - name: llm
+    label: llm-claude
+    provider: anthropic
+    model: claude-sonnet-5-5
+  # Open-weight model served locally, e.g. `vllm serve <model>` on :8000
+  # - name: llm
+  #   label: llm-open
+  #   provider: openai
+  #   model: <served-model-name>
+  #   base_url: http://localhost:8000/v1
+seeds: [0, 1, 2, 3, 4]
+common:
+  budget: 20
+  reps: 3
+  warmup: 1
+  validate_reps: 7
+  max_changes: 3
+  settle: 2

@@ -1,0 +1,14 @@
+# Runs anywhere, no root, no API key: simulated workloads + classic agents.
+# Use it to check the pipeline end to end before spending real machine time.
+name: smoke
+fake_root: true
+workloads: [sim-memdb, sim-writeback]
+agents:
+  - name: default
+  - name: random
+  - name: hillclimb
+seeds: [0, 1, 2]
+common:
+  budget: 20
+  reps: 1
+  validate_reps: 5

@@ -1,0 +1,105 @@
+% Paper skeleton. Swap \documentclass for the venue template before submitting
+% (e.g. acmart sigconf for EuroSys/SoCC/Middleware, usenix2019_v3 for ATC).
+% Notes in \todo{} are writing guidance -- delete them as you go.
+\documentclass[10pt,twocolumn]{article}
+\usepackage[margin=0.75in]{geometry}
+\usepackage{graphicx,booktabs,hyperref,xcolor}
+\newcommand{\todo}[1]{\textcolor{red}{[TODO: #1]}}
+\newcommand{\sys}{\textsc{OSTuner}}
+
+\title{Can LLM Agents Safely Tune the Linux Kernel?\\
+\large An Empirical Study of Sample Efficiency and Safety}
+\author{\todo{Author names and affiliations}}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\todo{Write last. 150--200 words, four parts: (1) Linux exposes hundreds of
+performance knobs whose best values depend on the workload; operators rely on
+static profiles or folk wisdom. (2) We present \sys{}, which lets an LLM agent
+propose kernel configurations inside a layered safety envelope (allowlist,
+bounds, cross-knob constraints, step limits, PSI-based health gating,
+automatic rollback). (3) Across N workloads on M hosts, the agent reaches X\%
+of the best found configuration in Y trials vs.\ Z for random search, with
+validated gains of A--B\%. (4) The safety layer blocks K\% of LLM proposals
+that would otherwise have been applied; Q of them would have hurt the host.}
+\end{abstract}
+
+\section{Introduction}
+\todo{Paragraph 1: the problem, with a concrete motivating number from your own
+measurements (e.g.\ THP setting changes sysbench memory throughput by X\% on
+host H). Paragraph 2: why existing approaches fall short -- static profiles
+(tuned), ML tuners need hundreds of trials~\cite{vanaken2017ottertune,zhu2017bestconfig}.
+Paragraph 3: LLMs encode operator knowledge but hallucinate; running their
+output as root is unsafe. Paragraph 4: our approach + contributions list.}
+
+Contributions:
+\begin{itemize}
+  \item \sys{}, an open-source safe tuning loop for LLM agents on Linux.
+  \item An evaluation across \todo{N} workloads and \todo{M} models against
+        classic search baselines at equal trial budgets.
+  \item A characterization of LLM failure modes when tuning an OS
+        (hallucinated knobs, bound violations, harmful configs).
+  \item Ablations showing which context (telemetry, history) and which safety
+        layers matter.
+\end{itemize}
+
+\section{Background and Motivation}
+\todo{The knobs (writeback, swappiness, THP, NUMA balancing), why their effects
+are workload dependent, and one motivating experiment: a grid sweep of 1--2 knobs
+on one workload showing a non-obvious optimum.}
+
+\section{Design}
+\subsection{Tuning loop}
+\todo{Propose $\rightarrow$ validate $\rightarrow$ apply $\rightarrow$ health
+check $\rightarrow$ measure $\rightarrow$ greedy accept. Include the figure
+from the README.}
+\subsection{Safety envelope}
+\todo{The six layers in ostuner/safety.py. Argue why each one is needed with a
+failure example from your logs.}
+\subsection{Agent design}
+\todo{Prompt structure (catalog, telemetry, history, best-so-far), JSON reply
+format, retry and fallback on parse failure. Put the full prompt in the
+appendix.}
+
+\section{Methodology}
+\todo{Hosts (from scripts/setup\_host.sh), kernel versions, workloads, trial
+budget, repetitions, seeds. Explain the interleaved A/B validation and why
+best-of-N is biased. State that tuned/irqbalance are disabled.}
+
+\section{Evaluation}
+\subsection{RQ1: Final performance}
+% \input{../results/main/figures/summary.tex}
+\todo{Table: validated improvement (mean $\pm$ std) per agent $\times$ workload.}
+\subsection{RQ2: Sample efficiency}
+% \includegraphics[width=\columnwidth]{../results/main/figures/convergence_fio-seqwrite.png}
+\subsection{RQ3: Safety}
+\todo{From safety.csv: rejected / unhealthy / harmful regressions per agent.
+Categorize LLM rejections: unknown knob, out of bounds, cross-knob, too many changes.}
+\subsection{RQ4: Ablations}
+\subsection{RQ5: Open vs.\ proprietary models}
+\subsection{RQ6: Are the rationales right?}
+\todo{Sample 50 rationales; two experts label each correct / plausible /
+wrong; report agreement (Cohen's kappa).}
+\subsection{Cost}
+\todo{Tokens, dollars and wall-clock time per tuning session.}
+
+\section{Discussion and Threats to Validity}
+\todo{Synthetic benchmarks; a single machine class; noise; LLM training-data
+contamination (compare against a ``folk wisdom'' config from vendor tuning
+guides); knob catalog scope.}
+
+\section{Related Work}
+\todo{ML-based configuration tuning~\cite{vanaken2017ottertune,zhu2017bestconfig};
+LLM-based knob tuning for databases~\cite{lao2024gptuner}; OS auto-tuning
+(tuned profiles, learned kernel policies); LLM agents for systems operations.
+Search the last two years of OSDI/SOSP/EuroSys/ATC/MLSys for the closest work
+and position against it explicitly.}
+
+\section{Conclusion}
+
+\bibliographystyle{plain}
+\bibliography{refs}
+\end{document}

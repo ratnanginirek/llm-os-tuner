@@ -1,0 +1,17 @@
+# Which parts of the LLM agent and the safety layer matter?
+#   sudo -E python3 experiments/run_matrix.py experiments/configs/ablations.yaml
+name: ablations
+workloads: [fio-seqwrite, sysbench-memory]
+agents:
+  - {name: llm, label: llm-full, model: claude-sonnet-5-5}
+  - {name: llm, label: llm-no-telemetry, model: claude-sonnet-5-5, no_telemetry: true}
+  - {name: llm, label: llm-no-history, model: claude-sonnet-5-5, no_history: true}
+  - {name: llm, label: llm-unlimited-steps, model: claude-sonnet-5-5, max_changes: 0}
+  - {name: llm, label: llm-no-health-gate, model: claude-sonnet-5-5, no_health_gate: true}
+seeds: [0, 1, 2]
+common:
+  budget: 20
+  reps: 3
+  warmup: 1
+  validate_reps: 7
+  settle: 2
